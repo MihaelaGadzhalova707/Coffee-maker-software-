@@ -18,7 +18,7 @@ html(lang='en')
           ul.nav.navbar-nav
             if user
              li(class=(title == 'Members' ? 'active' : ''))
-               a(href='/') Members
+               a(href='/new_coffee') New Coffee
             if !user
              li(class=(title == 'Register' ? 'active' : ''))
                a(href='/users/register') Register

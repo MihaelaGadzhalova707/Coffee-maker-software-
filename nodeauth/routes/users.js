@@ -5,6 +5,7 @@ var upload = multer({dest: './uploads'});
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
+//FOR MONGOOSE
 var User = require('../models/user');
 
 /* GET users listing. */
@@ -16,10 +17,13 @@ router.get('/register', function(req, res, next) {
   res.render('register',{title:'Register'});
 });
 
-router.get('/login', function(req, res, next) {
+ router.get('/login', function(req, res, next) {
   res.render('login',{title:'Login'});
 });
 
+
+
+//POST LOGIN 
 router.post('/login',
   passport.authenticate('local',{failureRedirect:'/users/login', failureFlash: 'Invalid username or password'}),
   function(req, res) {
@@ -27,6 +31,7 @@ router.post('/login',
    res.redirect('/');
 });
 
+//pASSPORT DOCUMENTATION
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
@@ -37,6 +42,7 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
+//STRATEGY
 passport.use(new LocalStrategy(function(username, password, done){
   User.getUserByUsername(username, function(err, user){
     if(err) throw err;
@@ -55,6 +61,7 @@ passport.use(new LocalStrategy(function(username, password, done){
   });
 }));
 
+//FILE UPLOADER
 router.post('/register', upload.single('profileimage'), function(req, res, next) {
 	var name = req.body.name;
 	var email = req.body.email;
@@ -78,7 +85,7 @@ router.post('/register', upload.single('profileimage'), function(req, res, next)
 	req.checkBody('password', 'Password field is required').notEmpty();
 	req.checkBody('password2', 'passwords do not match').equals(req.body.password);
 
-	//Check Errors
+// 	//Check Errors
 	var errors = req.validationErrors();
 
 	if(errors) {

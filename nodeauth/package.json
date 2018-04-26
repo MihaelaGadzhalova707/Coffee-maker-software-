@@ -22,7 +22,6 @@
     "multer": "*",
     "passport": "*",
     "passport-http": "*",
-    "passport-local": "*",
-    "pug": "^2.0.3"
+    "passport-local": "*"
   }
 }
