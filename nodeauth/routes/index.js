@@ -7,26 +7,17 @@ router.get('/', ensureAuthenticated, function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-// router.get('/coffee_test', function(req, res, next) {
-//   res.render('coffee_test',{title:'Coffee1'});
-// });
 
-// router.get("/coffee_test", function(req, res) {  
-//     console.log (req.query);
-//     // var response = {message: 'You ordered'};
-//     // res.send(response);
-//      req.flash('success', 'You ordered ' + req.query.lenght + ' coffee');
-//      // res.redirect("/coffee_test");
-//      res.redirect('back');
-// })
-
-// router.get ('/coffee_test/:lenght/:count',function(req, res, next) {
-// 	var coffee_lenght = req.params.lenght;
-// 	var coffee_count = req.params.count;
-// 	var response = {message: 'You ordered ' + coffee_count + ' coffies with ' + coffee_lenght + ' lenght'};
-// 	res.send(response);
-// });
-
+router.get("/on_off", function(req, res) {  
+    console.log (req.query);
+    console.log(req.query.action);
+    const { execSync } = require('child_process');
+    // stderr is sent to stdout of parent process
+   // you can set options.stdio if you want it to go elsewhere
+    let stdout1 = execSync('/usr/bin/mosquitto_pub -t machine -m "' + req.query.action + '"');
+     req.flash('success', 'Success');
+     res.redirect('back');
+})
 
 function ensureAuthenticated(req, res, next){
 	if(req.isAuthenticated()){
@@ -34,6 +25,5 @@ function ensureAuthenticated(req, res, next){
 	}
 	res.redirect('/users/login');
 }
-
 
 module.exports = router;

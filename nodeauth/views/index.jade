@@ -1,3 +1,8 @@
 extends layout
 
 block content
+ .d-flex.justify-content-center
+  form(method='get', action='/on_off')
+   .form-group
+    input(name='action', type='hidden', value = 'on_off')
+   input.btn.btn-primary.btn-lg(type='submit', name='submit',value = 'ON/OFF')

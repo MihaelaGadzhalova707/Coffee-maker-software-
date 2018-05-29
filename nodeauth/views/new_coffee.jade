@@ -7,13 +7,19 @@ block content
  if errors
   each error, i in errors
    div.alert.alert-danger #{error.msg}
+
  form(method='get', action='/new_coffee/coffee_test')
   .form-group
-   label Select Lenght
-   select.form-control(name = 'lenght')
-    option(value = "extra short") Extra Short
-    option(value = 'short') Short
-    option(value = 'medium') Medium
-    option(value = 'long') Long
-    option(value = 'extra long') Extra Long
+  label Cups Count
+  .form-check.form-check-inline
+   input#OneCup.form-check-input(type='radio', name='count', value='make_one_cup', checked = 'checked')
+   label.form-check-label(for='OneCup') One
+  .form-check.form-check-inline
+   input#TwoCups.form-check-input(type='radio', name='count', value='make_two_cups')
+   label.form-check-label(for='TwoCups') Two
+  label Coffee Lenght
+  input(type='range', name = 'lenght', min='0', max='64', value='32') 
+  label Coffee Concentration
+  input(type='range', name = 'concentration', min='0', max='64', value='32') 
   input.btn.btn-primary(type='submit', name='submit',value = 'Submit')
+
