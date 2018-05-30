@@ -3,9 +3,9 @@
 #include "Mosquitto.h"
 #include "Networking.h"
 
-#define __APP_VERSION__  "1.0.1 build 2018-05-20"
-
 //=========================================================================================
+int alarm1State               = LOW;
+int alarm2State               = LOW;
 const int DEBUG_LEVEL         = 3;
 const int send_requests_count = 10;
 const int local_id            = 1;
@@ -31,17 +31,7 @@ const String wifi_ssid        = "nsn_cisco";
 const String wifi_password    = "passenable";
 //const String wifi_ssid        = "Mi Phone";
 //const String wifi_password    = "coffeemaker";
-/*const String http_host        = "rety.dynu.net";*/
 const int http_port           = 80;
-/*
-const String mqtt_host        = "10.96.252.90";
-const int mqtt_port           = 1883;
-const String mqtt_id          = "Coffee_Machine:" + String(local_id);
-const String mqtt_user        = "rety";
-const String mqtt_password    = "retypass";
-const String mqtt_topic_in    = "machine";
-const String mqtt_topic_out   = "server";
-*/
 
 const String mqtt_host        = "rety.dynu.net";
 const int mqtt_port           = 1883;
@@ -61,8 +51,6 @@ Mosquitto mosquitto;
 void setup() {
   Serial.begin(9600);
   Serial.println("");
-  Serial.println("Version: " + String(__APP_VERSION__));
-
   pinMode(CHECKER,OUTPUT);
   pinMode(SWITCH_ON_OFF, OUTPUT);
   pinMode(SWITCH_ONE_CUP, OUTPUT);
@@ -72,7 +60,7 @@ void setup() {
   pinMode(SETTINGS_UD, OUTPUT);
   pinMode(SETTINGS_CS_A1, OUTPUT);
   pinMode(SETTINGS_CS_A2, OUTPUT);
-
+  
   digitalWrite(CHECKER, LOW);
   digitalWrite(SWITCH_ON_OFF, LOW);
   digitalWrite(SWITCH_ONE_CUP, LOW);
@@ -106,9 +94,8 @@ void setup() {
   mosquitto.setCallback(mqttCallback);
 
   mosquitto.setup(mqtt_host, mqtt_id, mqtt_user, mqtt_password, mqtt_port, mqtt_topic_in, mqtt_topic_out);
-
+  alarmCheck();
 }
-
 //=========================================================================================
 void loop() {
   unsigned long currentMillis = millis();
@@ -128,8 +115,24 @@ void loop() {
   }
   
  if(! mosquitto.read()) Serial.println("Failed to read !!!");
-  
+  alarmCheck();
 }
+
+//=========================================================================================
+void alarmCheck() {
+
+    if (digitalRead(INPUT_ALARM1) != alarm1State) {
+
+         alarm1State = digitalRead(INPUT_ALARM1);
+         onAlarmEvent(alarm1State,1);
+    }
+
+    if (digitalRead(INPUT_ALARM2) != alarm2State) {
+
+         alarm2State = digitalRead(INPUT_ALARM2);
+         onAlarmEvent(alarm2State,2);
+    }
+ }
 
 
 //=========================================================================================
@@ -151,11 +154,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length)
   if(msg.equals("on_off")) doOnOff();
   else if(msg.equals("make_one_cup")) doStartOneCup();
   else if(msg.equals("make_two_cups")) doStartTwoCups();
-  else if(msg.equals("get_version"))
-  {
-    mosquitto.publish("version:" + String(__APP_VERSION__));
-    return;
-  }else if(msg.startsWith("set:")){
+  else if(msg.startsWith("set:")){
     String tmp = msg.substring(4);
 
     if(tmp.indexOf(":") <= 0)
@@ -292,3 +291,20 @@ void doStartOneCup() { digitalWrite(SWITCH_ONE_CUP, HIGH); delay(pulse_width); d
 void doStartTwoCups() { digitalWrite(SWITCH_TWO_CUPS, HIGH); delay(pulse_width); digitalWrite(SWITCH_TWO_CUPS, LOW); }
 
 //=========================================================================================
+
+void onAlarmEvent(int alarmState, int index) {
+    String msg = "0";
+   switch (alarmState) {
+    case HIGH:
+        msg = String(index);
+        msg += String(1);
+      break;
+    case LOW:
+        msg = String(index);
+        msg += String(0);
+      break;
+    default: Serial.println("Error");
+    }
+
+    mqttSend( msg );
+ }
