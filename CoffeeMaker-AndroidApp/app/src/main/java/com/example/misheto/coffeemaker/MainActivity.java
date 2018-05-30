@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button btnHit = (Button) findViewById(R.id.btnHit);
+        Button btnCoffee1 = (Button) findViewById(R.id.coffee1);
         item = (TextView) findViewById(R.id.JsonItem);
         btnHit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,6 +37,23 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+            }
+        });
+
+        btnCoffee1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HttpURLConnection connection = null;
+                try {
+                    URL url = new URL("rety.dynu.net/new_coffee/coffee_test?count=make_one_cup");
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.connect();
+                    //item.setText("Button Clicked");
+                }catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 

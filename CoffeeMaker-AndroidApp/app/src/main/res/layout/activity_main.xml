@@ -12,6 +12,12 @@
         android:id="@+id/btnHit"
         android:text="On/Off"/>
 
+    <Button
+        android:id="@+id/coffee1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Make one coffee" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
