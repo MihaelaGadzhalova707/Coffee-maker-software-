@@ -231,9 +231,9 @@ bool setActuator(int actuator, int pos)
 
     for(int i = 0; i < ACTUATOR_MAX_STEPS; i++)
     {
-      digitalWrite(settings_cs, HIGH);
+      digitalWrite(SETTINGS_UD, HIGH);
       delay(ACTUATOR_STEP_WIDTH);
-      digitalWrite(settings_cs, LOW);
+      digitalWrite(SETTINGS_UD, LOW);
       delay(ACTUATOR_STEP_WIDTH);
     }
 
